@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Alquileres</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<h1>Contratos de Alquiler</h1>
+
+<h2>Nuevo contrato</h2>
+<form id="form-contrato">
+  <input type="text" id="inquilino" placeholder="Inquilino" required>
+  <input type="text" id="calle" placeholder="Calle" required>
+  <input type="number" id="numero" placeholder="Número" required>
+
+<select id="tipo_contrato">
+  <option value="trimestral">Trimestral</option>
+  <option value="cuatrimestral">Cuatrimestral</option>
+  <option value="semestral">Semestral</option>
+</select>
+
+    <input id="fecha_inicio" type="date" required>
+  <input id="fecha_fin" type="date" required>
+
+  <button type="submit">Guardar</button>
+</form>
+
+<hr>
+
+<h2>Lista de contratos</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Inquilino</th>
+      <th>Dirección</th>
+      <th>Tipo</th>
+      <th>Inicio</th>
+      <th>Fin</th>
+    </tr>
+  </thead>
+  <tbody id="tabla-contratos"></tbody>
+</table>
+
+<hr>
+
+<h2>Calendario de actualizaciones</h2>
+<input type="month" id="mes">
+<ul id="lista-calendario"></ul>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="app.js"></script>
+</body>
+</html>
