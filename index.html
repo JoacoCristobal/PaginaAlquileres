@@ -2,54 +2,156 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; base-uri 'self'; form-action 'self'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
   <title>Gestión de Alquileres</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<h1>Contratos de Alquiler</h1>
+<!-- ============ LOGIN ============ -->
+<main id="vista-login" class="login" hidden>
+  <div class="login-card">
+    <div class="marca">
+      <span class="marca-icono" aria-hidden="true">⌂</span>
+      <span class="marca-texto">Gestión de Alquileres</span>
+    </div>
+    <h1>Ingresar</h1>
+    <p class="sub">Acceso exclusivo para la oficina.</p>
 
-<h2>Nuevo contrato</h2>
-<form id="form-contrato">
-  <input type="text" id="inquilino" placeholder="Inquilino" required>
-  <input type="text" id="calle" placeholder="Calle" required>
-  <input type="number" id="numero" placeholder="Número" required>
+    <form id="form-login" autocomplete="on">
+      <label>
+        <span>Correo electrónico</span>
+        <input type="email" id="login-email" autocomplete="username" required>
+      </label>
+      <label>
+        <span>Contraseña</span>
+        <input type="password" id="login-password" autocomplete="current-password" required>
+      </label>
+      <p id="login-error" class="error" role="alert" hidden></p>
+      <button type="submit" class="btn btn-primario btn-bloque" id="btn-login">Entrar</button>
+    </form>
+  </div>
+</main>
 
-<select id="tipo_contrato">
-  <option value="trimestral">Trimestral</option>
-  <option value="cuatrimestral">Cuatrimestral</option>
-  <option value="semestral">Semestral</option>
-</select>
+<!-- ============ APP ============ -->
+<div id="vista-app" hidden>
+  <header class="topbar">
+    <div class="topbar-in">
+      <div class="marca">
+        <span class="marca-icono" aria-hidden="true">⌂</span>
+        <span class="marca-texto">Gestión de Alquileres</span>
+      </div>
+      <div class="topbar-der">
+        <span id="usuario-email" class="usuario"></span>
+        <button type="button" class="btn btn-sec" id="btn-logout">Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
 
-    <input id="fecha_inicio" type="date" required>
-  <input id="fecha_fin" type="date" required>
+  <main class="contenedor">
 
-  <button type="submit">Guardar</button>
-</form>
+    <section class="tarjeta">
+      <div class="tarjeta-cab">
+        <h2>Nuevo contrato</h2>
+        <p>Al guardar, se generan automáticamente las fechas de actualización.</p>
+      </div>
 
-<hr>
+      <form id="form-contrato" class="grilla-form">
+        <label class="campo-ancho">
+          <span>Inquilino</span>
+          <input type="text" id="inquilino" maxlength="120" required>
+        </label>
+        <label class="campo-ancho">
+          <span>Calle</span>
+          <input type="text" id="calle" maxlength="120" required>
+        </label>
+        <label>
+          <span>Número</span>
+          <input type="number" id="numero" min="0" required>
+        </label>
+        <label>
+          <span>Actualización</span>
+          <select id="tipo_contrato">
+            <option value="trimestral">Trimestral</option>
+            <option value="cuatrimestral">Cuatrimestral</option>
+            <option value="semestral">Semestral</option>
+          </select>
+        </label>
+        <label>
+          <span>Fecha de inicio</span>
+          <input type="date" id="fecha_inicio" required>
+        </label>
+        <label>
+          <span>Fecha de fin</span>
+          <input type="date" id="fecha_fin" required>
+        </label>
+        <div class="acciones-form">
+          <button type="submit" class="btn btn-primario" id="btn-guardar">Guardar contrato</button>
+        </div>
+      </form>
+    </section>
 
-<h2>Lista de contratos</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Inquilino</th>
-      <th>Dirección</th>
-      <th>Tipo</th>
-      <th>Inicio</th>
-      <th>Fin</th>
-    </tr>
-  </thead>
-  <tbody id="tabla-contratos"></tbody>
-</table>
+    <section class="tarjeta">
+      <div class="tarjeta-cab fila">
+        <div>
+          <h2>Lista de contratos</h2>
+          <p id="contador-contratos">—</p>
+        </div>
+      </div>
 
-<hr>
+      <div class="tabla-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Inquilino</th>
+              <th>Dirección</th>
+              <th>Tipo</th>
+              <th>Inicio</th>
+              <th>Fin</th>
+              <th class="col-acc"><span class="sr-only">Acciones</span></th>
+            </tr>
+          </thead>
+          <tbody id="tabla-contratos"></tbody>
+        </table>
+      </div>
+    </section>
 
-<h2>Calendario de actualizaciones</h2>
-<input type="month" id="mes">
-<ul id="lista-calendario"></ul>
+    <section class="tarjeta">
+      <div class="tarjeta-cab fila">
+        <div>
+          <h2>Calendario de actualizaciones</h2>
+          <p>Elegí un mes para ver qué contratos se actualizan.</p>
+        </div>
+        <input type="month" id="mes" aria-label="Mes">
+      </div>
+      <ul id="lista-calendario" class="calendario"></ul>
+    </section>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  </main>
+</div>
+
+<!-- ============ CONFIRMAR BORRADO ============ -->
+<dialog id="dlg-borrar" class="modal">
+  <form method="dialog" class="modal-in" id="form-borrar">
+    <h3>¿Borrar este contrato?</h3>
+    <p id="dlg-detalle"></p>
+    <p class="aviso">Se eliminarán también todas sus fechas de actualización. Esta acción no se puede deshacer.</p>
+    <div class="modal-acc">
+      <button type="button" class="btn btn-sec" id="dlg-cancelar">Cancelar</button>
+      <button type="submit" class="btn btn-peligro" id="dlg-confirmar" value="ok">Sí, borrar</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="app.js"></script>
 </body>
 </html>
